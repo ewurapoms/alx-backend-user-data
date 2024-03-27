@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """ Module for app.py"""
-
-from flask import Flask, jsonify, request, make_response
-from flask import abort, Response, redirect, url_for
+from flask import Flask, jsonify, request
+from flask import abort, redirect, url_for
 from auth import Auth
 
 app = Flask(__name__)
@@ -31,12 +30,14 @@ def users() -> str:
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
     """user login function"""
-    email = request.form.get["email"]
-    password = request.form.get["password"]
+    email = request.form.get("email")
+    password = request.form.get("password")
+
     if not AUTH.valid_login(email, password):
         abort(401)
+
     session_id = AUTH.create_session(email)
-    response = jsonify({"email": email, "message": "logged in"})
+    response = jsonify({"email": f"{email}", "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
 
@@ -86,7 +87,7 @@ def update_password() -> str:
     except ValueError:
         abort(403)
 
-    return jsonify({"email": email, "message": "Password updated"}), 200
+    return jsonify({"email": f"{email}", "message": "Password updated"})
 
 
 if __name__ == "__main__":
